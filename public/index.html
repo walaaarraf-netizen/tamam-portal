@@ -1,1 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تمام Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+:root{
+  --green:#4CAF50;--green-dark:#2E7D32;--green-light:#81C784;
+  --green-bg:#E8F5E9;--green-bg2:#C8E6C9;--green-text:#1B5E20;
+  --green-mid:#388E3C;
+  --bg:#F1F8E9;--surface:#FFFFFF;
+  --border:#C8E6C9;--border2:#A5D6A7;
+  --text:#1B5E20;--text2:#388E3C;--text3:#81C784;
+  --red:#C62828;--red-bg:#FFEBEE;--red-text:#C62828;
+  --amber-bg:#FFF8E1;--amber-text:#F57F17;
+  --radius:10px;--radius-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-page{width:100%;max-width:860px;background:var(--surface);border-radius:20px;overflow:hidden;display:flex;box-shadow:0 20px 60px rgba(46,125,50,.15);}
+.login-left{width:38%;background:var(--green-dark);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;position:relative;overflow:hidden;}
+.login-left::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:rgba(255,255,255,.05);border-radius:50%;}
+.login-left::after{content:'';position:absolute;bottom:-40px;right:-40px;width:150px;height:150px;background:rgba(255,255,255,.05);border-radius:50%;}
+.login-right{flex:1;padding:48px 40px;display:flex;flex-direction:column;justify-content:center;}
+.tamam-logo{font-size:32px;font-weight:700;color:var(--green-dark);margin-bottom:4px;}
+.login-subtitle{font-size:13px;color:var(--text2);margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.login-system{font-size:16px;font-weight:600;color:var(--green-dark);margin-bottom:24px;}
+.lg{margin-bottom:14px;}
+.ll{font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:500;display:block;}
+.li{width:100%;padding:10px 14px;font-size:14px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;transition:border-color .15s;}
+.li:focus{outline:none;border-color:var(--green);}
+.pw-wrap{position:relative;}
+.pw-wrap .li{padding-right:40px;}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);background:none;border:none;font-size:16px;}
+.remember{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);margin-bottom:20px;cursor:pointer;}
+.remember input{accent-color:var(--green);}
+.login-btn{width:100%;padding:12px;background:var(--green-dark);color:#fff;border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.login-btn:hover{background:var(--green-mid);}
+.login-btn:disabled{opacity:.7;cursor:not-allowed;}
+.err-box{background:#FFEBEE;border:1px solid #FFCDD2;border-radius:var(--radius);padding:10px 12px;font-size:12px;color:#C62828;margin-bottom:12px;display:none;}
+.err-box.show{display:block;}
+.app-wrap{width:100%;max-width:480px;display:none;}
+.phone{background:var(--surface);border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(46,125,50,.12);display:flex;flex-direction:column;min-height:700px;}
+.topbar{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--green-dark);}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;}
+.tb-title{font-size:15px;font-weight:600;color:#fff;}
+.tb-sub{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px;}
+.logout-btn{font-size:11px;color:rgba(255,255,255,.8);background:rgba(255,255,255,.15);border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit;}
+.screen{display:none;flex-direction:column;flex:1;}
+.screen.on{display:flex;}
+.tab-row{display:flex;padding:0 18px;border-bottom:1px solid var(--border);background:var(--surface);}
+.tab{padding:10px 10px;font-size:12px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap;}
+.tab.on{color:var(--green-dark);border-bottom-color:var(--green-dark);font-weight:500;}
+.scroll{flex:1;overflow-y:auto;padding:16px 18px;}
+.scroll::-webkit-scrollbar{width:3px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(46,125,50,.06);}
+.card:hover{border-color:var(--green-light);box-shadow:0 4px 12px rgba(46,125,50,.1);}
+.card.rej{border-color:#EF9A9A;}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.cn{font-size:14px;font-weight:500;color:var(--text);}
+.cd{font-size:12px;color:var(--text2);margin-bottom:3px;}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:10px;font-weight:600;}
+.bp{background:var(--amber-bg);color:var(--amber-text);}
+.ba{background:var(--green-bg);color:var(--green-text);}
+.br{background:var(--red-bg);color:var(--red-text);}
+.sec{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.fg{margin-bottom:11px;}
+.fl{font-size:11px;color:var(--text2);margin-bottom:4px;display:flex;justify-content:space-between;}
+.auto-tag{font-size:10px;color:var(--text3);background:var(--green-bg);padding:1px 6px;border-radius:4px;}
+.fi{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;transition:border-color .15s;}
+.fi:focus{outline:none;border-color:var(--green);}
+.fi.ro{background:var(--green-bg);color:var(--text2);border-color:var(--border);}
+.fs{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-family:inherit;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn{width:100%;padding:11px;font-size:13px;font-weight:500;border:none;border-radius:var(--radius);cursor:pointer;font-family:inherit;transition:all .15s;margin-top:6px;}
+.btn:disabled{opacity:.7;cursor:not-allowed;}
+.btn-green{background:var(--green-dark);color:#fff;}
+.btn-approve{background:var(--green-bg);color:var(--green-text);}
+.btn-reject{background:var(--red-bg);color:var(--red-text);}
+.action-row{display:flex;gap:8px;margin-top:12px;}
+.action-row button{flex:1;padding:10px;font-size:13px;font-weight:500;border:none;border-radius:var(--radius);cursor:pointer;font-family:inherit;}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.metric{background:var(--green-bg);border-radius:var(--radius);padding:12px;}
+.ml{font-size:11px;color:var(--text2);margin-bottom:4px;}
+.mv{font-size:26px;font-weight:600;color:var(--green-dark);}
+.mv.r{color:var(--red);}
+.mv.a{color:#F57F17;}
+.pbar{height:6px;background:var(--green-bg2);border-radius:99px;margin-top:8px;}
+.pfill{height:6px;border-radius:99px;background:var(--green-dark);}
+.nav{display:flex;border-top:1px solid var(--border);background:var(--surface);padding-bottom:4px;}
+.nb{flex:1;padding:10px 4px 7px;font-size:10px;color:var(--text2);background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;}
+.nb.on{color:var(--green-dark);}
+.nb svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.back-btn{display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;color:var(--text2);background:none;border:none;border-bottom:1px solid var(--border);cursor:pointer;font-family:inherit;width:100%;}
+.hint{font-size:11px;color:var(--green-dark);margin-top:5px;font-weight:500;}
+.rej-note{background:var(--red-bg);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--red-text);margin-bottom:12px;border-left:3px solid #EF9A9A;}
+.empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:13px;}
+.loading{text-align:center;padding:32px;color:var(--text2);font-size:13px;}
+.spinner{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--green-dark);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.team-block{margin-bottom:20px;}
+.team-label{font-size:13px;font-weight:500;color:var(--green-dark);margin-bottom:10px;padding:6px 10px;background:var(--green-bg);border-radius:var(--radius);display:inline-block;}
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--green-dark);color:#fff;padding:10px 20px;border-radius:99px;font-size:12px;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
 
+<!-- LOGIN -->
+<div class="login-page" id="login-page">
+  <div class="login-left">
+    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+      <circle cx="60" cy="60" r="50" fill="rgba(255,255,255,0.08)"/>
+      <circle cx="60" cy="45" r="20" fill="rgba(255,255,255,0.15)"/>
+      <path d="M30 95 Q60 70 90 95" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+      <path d="M48 43 L56 51 L72 35" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div style="margin-top:20px;text-align:center;">
+      <div style="font-size:22px;font-weight:700;color:rgba(255,255,255,0.95);">تمام</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;">Sales Management Portal</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="tamam-logo">تمام •</div>
+    <div class="login-subtitle">Ashal Holding — DF Sales System</div>
+    <div class="login-system">Welcome Back</div>
+    <div class="lg">
+      <label class="ll">Username</label>
+      <input class="li" id="ln" placeholder="Enter your username">
+    </div>
+    <div class="lg">
+      <label class="ll">Password</label>
+      <div class="pw-wrap">
+        <input class="li" id="lp" type="password" placeholder="Enter your password">
+        <button class="pw-eye" onclick="togglePw()">&#128065;</button>
+      </div>
+    </div>
+    <label class="remember"><input type="checkbox" id="rem"> Remember me</label>
+    <div class="err-box" id="err-box">Invalid username or password.</div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-wrap" id="app-wrap">
+  <div class="phone">
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="avatar" id="av"></div>
+        <div><div class="tb-title" id="tb-t"></div><div class="tb-sub" id="tb-s"></div></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+    <div id="sc-list" class="screen on">
+      <div class="tab-row" id="list-tabs"></div>
+      <div class="scroll" id="list-body"></div>
+    </div>
+    <div id="sc-add" class="screen">
+      <div class="scroll">
+        <div class="sec">Client Info</div>
+        <div class="fg"><label class="fl">Customer Name <span style="color:var(--red)">*</span></label><input class="fi" id="a-name" placeholder="Full name"></div>
+        <div class="two">
+          <div class="fg"><label class="fl">National ID</label><input class="fi" id="a-id" placeholder="14 digits"></div>
+          <div class="fg"><label class="fl">Mobile <span style="color:var(--red)">*</span></label><input class="fi" id="a-mob" placeholder="01X..."></div>
+        </div>
+        <div class="two">
+          <div class="fg"><label class="fl">Company</label><input class="fi" id="a-co" placeholder="Employer"></div>
+          <div class="fg"><label class="fl">Monthly Income</label><input class="fi" id="a-inc" placeholder="EGP" type="number"></div>
+        </div>
+        <div class="fg"><label class="fl">Program <span style="color:var(--red)">*</span></label>
+          <select class="fs" id="a-prog">
+            <option value="">Select...</option>
+            <option>Scooters</option>
+            <option>Electronics & other services</option>
+            <option>Corp. Deal / Sokar Hawamdia</option>
+            <option>Filters Up to 9k</option>
+          </select>
+        </div>
+        <div class="two">
+          <div class="fg"><label class="fl">Merchant Name</label><input class="fi" id="a-mer" placeholder="Merchant"></div>
+          <div class="fg"><label class="fl">Sales Name</label><input class="fi" id="a-sal" placeholder="Rep name"></div>
+        </div>
+        <div class="sec">Auto-filled</div>
+        <div class="two">
+          <div class="fg"><label class="fl">Users Name <span class="auto-tag">auto</span></label><input class="fi ro" id="a-usr" readonly></div>
+          <div class="fg"><label class="fl">Entry Date <span class="auto-tag">auto</span></label><input class="fi ro" id="a-dt" readonly></div>
+        </div>
+        <button class="btn btn-green" id="submit-btn" onclick="submitClient()">Submit Client</button>
+        <div style="height:20px;"></div>
+      </div>
+    </div>
+    <div id="sc-review" class="screen">
+      <button class="back-btn" onclick="goBack()">&#8592; Back</button>
+      <div class="scroll" id="review-body"></div>
+    </div>
+    <div id="sc-dash" class="screen">
+      <div class="scroll" id="dash-body"></div>
+    </div>
+    <div class="nav" id="main-nav"></div>
+  </div>
+</div>
+
+<script>
+const API = '/api/sharepoint';
+const LISTS = { users: 'DF Users', clients: 'Sales_Clients' };
+let currentUser, currentRole, currentTeam, allClients = [], currentFilter = null;
+
+async function sp(body) {
+  const res = await fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  return await res.json();
+}
+
+function togglePw() { const i=document.getElementById('lp'); i.type=i.type==='password'?'text':'password'; }
+
+async function doLogin() {
+  const u=document.getElementById('ln').value.trim(), p=document.getElementById('lp').value.trim();
+  if(!u||!p){showErr('Please enter username and password');return;}
+  const btn=document.getElementById('login-btn'); btn.textContent='Signing in...'; btn.disabled=true;
+  document.getElementById('err-box').classList.remove('show');
+  try {
+    const res = await sp({ action:'get', list:LISTS.users, filter:`UserName eq '${u}' and Password eq '${p}'` });
+    if(!res.ok||!res.data.length){ showErr('Invalid username or password.'); btn.textContent='Login'; btn.disabled=false; return; }
+    const usr=res.data[0];
+    currentUser=usr.SalesName||usr.UserName;
+    currentRole=(usr.Role||'').toLowerCase();
+    currentTeam=usr.Team||'';
+    document.getElementById('login-page').style.display='none';
+    document.getElementById('app-wrap').style.display='block';
+    setupApp();
+  } catch(e) { showErr('Connection error. Please try again.'); btn.textContent='Login'; btn.disabled=false; }
+}
+
+function showErr(m){ const e=document.getElementById('err-box'); e.textContent=m; e.classList.add('show'); }
+
+function doLogout(){
+  document.getElementById('app-wrap').style.display='none';
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('ln').value=''; document.getElementById('lp').value='';
+  document.getElementById('login-btn').textContent='Login'; document.getElementById('login-btn').disabled=false;
+}
+
+function initials(n){ return (n||'').trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function setupApp(){
+  const titles={'sales-a':'تمام Portal','sales-b':'تمام Portal','leader-a':'Team A Review','leader-b':'Team B Review','risk':'Risk Manager'};
+  const subs={'sales-a':'Sales · Team A','sales-b':'Sales · Team B','leader-a':'Leader · Team A','leader-b':'Leader · Team B','risk':'Full Access'};
+  document.getElementById('av').textContent=initials(currentUser);
+  document.getElementById('tb-t').textContent=titles[currentRole]||'تمام Portal';
+  document.getElementById('tb-s').textContent=currentUser+' · '+(subs[currentRole]||currentRole);
+  document.getElementById('a-usr').value=currentUser;
+  document.getElementById('a-dt').value=new Date().toLocaleDateString('en-EG');
+  buildNav(); loadClients(); showScreen('sc-list');
+}
+
+function buildNav(){
+  const nav=document.getElementById('main-nav'); nav.innerHTML='';
+  const isSales=currentRole.startsWith('sales');
+  const tabs=isSales
+    ?[{s:'sc-list',l:'My Clients',i:'list'},{s:'sc-add',l:'Add Client',i:'plus'},{s:'sc-dash',l:'Dashboard',i:'chart'}]
+    :[{s:'sc-list',l:'Clients',i:'list'},{s:'sc-dash',l:'Dashboard',i:'chart'}];
+  const icons={
+    list:'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+    plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    chart:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'
+  };
+  tabs.forEach((t,i)=>{
+    const b=document.createElement('button'); b.className='nb'+(i===0?' on':'');
+    b.innerHTML=`<svg viewBox="0 0 24 24">${icons[t.i]}</svg>${t.l}`;
+    b.onclick=()=>{document.querySelectorAll('.nb').forEach(x=>x.classList.remove('on'));b.classList.add('on');showScreen(t.s);};
+    nav.appendChild(b);
+  });
+}
+
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
+
+async function loadClients(){
+  document.getElementById('list-body').innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  let filter='';
+  if(currentRole==='sales-a') filter=`UserName eq '${currentUser}' and Team eq 'A'`;
+  else if(currentRole==='sales-b') filter=`UserName eq '${currentUser}' and Team eq 'B'`;
+  else if(currentRole==='leader-a') filter="Team eq 'A'";
+  else if(currentRole==='leader-b') filter="Team eq 'B'";
+  const res=await sp({action:'get',list:LISTS.clients,filter});
+  allClients=res.data||[];
+  renderList(); renderDash();
+}
+
+function renderList(filter){
+  currentFilter=filter||null;
+  const isLeader=currentRole.startsWith('leader')||currentRole==='risk';
+  const isSales=currentRole.startsWith('sales');
+  const tabs=document.getElementById('list-tabs'); tabs.innerHTML='';
+  if(isLeader){
+    ['All','Pending','Approved','Rejected'].forEach(t=>{
+      const cnt=t==='All'?allClients.length:allClients.filter(c=>c.Status===t).length;
+      const d=document.createElement('div'); d.className='tab'+((!filter&&t==='All')||(filter===t)?' on':'');
+      d.textContent=`${t} (${cnt})`; d.onclick=()=>renderList(t==='All'?null:t); tabs.appendChild(d);
+    });
+  }
+  const shown=filter?allClients.filter(c=>c.Status===filter):allClients;
+  let html='';
+  if(!shown.length){html='<div class="empty">No clients found</div>';}
+  else shown.forEach(c=>{
+    const bc=c.Status==='Approved'?'ba':c.Status==='Rejected'?'br':'bp';
+    html+=`<div class="card${c.Status==='Rejected'?' rej':''}" onclick="openReview(${c.Id})">
+      <div class="ch"><div class="cn">${c.CustomerName||'—'}</div><span class="badge ${bc}">${c.Status||'Pending'}</span></div>
+      <div class="cd">&#128241; ${c.Mobile||'—'} &nbsp;&middot;&nbsp; ${c.Program||'—'}</div>
+      <div class="cd">${c.UserName||'—'} &middot; ${c.EntryDate?new Date(c.EntryDate).toLocaleDateString('en-EG'):''}</div>
+      ${c.Status==='Rejected'&&c.Reason?`<div style="font-size:11px;color:var(--red);margin-top:3px;">Reason: ${c.Reason}</div>`:''}
+      ${isSales&&c.Status==='Rejected'?`<div class="hint">Tap to edit & resubmit &#8594;</div>`:''}
+      ${isLeader&&c.Status==='Pending'?`<div class="hint">Tap to review &#8594;</div>`:''}
+    </div>`;
+  });
+  document.getElementById('list-body').innerHTML=html;
+}
+
+const programs=['Scooters','Electronics & other services','Corp. Deal / Sokar Hawamdia','Filters Up to 9k'];
+const deviations=['Normal','Restricted profession','Fico Score','Tourism Sector','I score history'];
+const reasons=['Exceed DBR','Below Min.Age','Negative I-score','Does Not Meet Any Criteria','Fake Documents','Fake Medical ID','Fake Club ID','Fake Car License'];
+const subReasons=['Fake Medical ID','Fake Club ID','Fake Documents','Fake Car License'];
+
+function gv(id){const e=document.getElementById(id);return e?e.value:'';}
+function fld(l,id,v,ro,tag){return `<div class="fg"><label class="fl">${l}${tag?`<span class="auto-tag">${tag}</span>`:''}</label><input class="fi${ro?' ro':''}" id="${id}" value="${v||''}"${ro?' readonly':''}></div>`;}
+function fsel(l,id,opts,v,ro){if(ro)return fld(l,id,v,true);return `<div class="fg"><label class="fl">${l}</label><select class="fs" id="${id}"><option value="">Select...</option>${opts.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select></div>`;}
+function fcol(a,b){return `<div class="two">${a}${b}</div>`;}
+
+function openReview(id){
+  const c=allClients.find(x=>x.Id===id); if(!c)return;
+  const isSales=currentRole.startsWith('sales'), isLeader=currentRole.startsWith('leader')||currentRole==='risk';
+  const canReview=isLeader&&c.Status==='Pending', canEdit=isSales&&c.Status==='Rejected';
+  const bc=c.Status==='Approved'?'ba':c.Status==='Rejected'?'br':'bp';
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-size:16px;font-weight:600;color:var(--text);">${c.CustomerName||'—'}</div>
+    <span class="badge ${bc}">${c.Status||'Pending'}</span></div>`;
+  if(canEdit) html+=`<div class="rej-note">Rejected — edit and resubmit</div>`;
+  const sRO=isLeader||c.Status==='Approved';
+  html+=`<div class="sec">Sales Data ${isSales?'':'(Read Only)'}</div>`;
+  html+=fld('Customer Name','r-name',c.CustomerName,sRO)+fcol(fld('National ID','r-id',c.NationalID,sRO),fld('Mobile','r-mob',c.Mobile,sRO))+fcol(fld('Company','r-co',c.CompanyName,sRO),fld('Monthly Income','r-inc',c.MonthlyIncome,sRO))+fsel('Program','r-prog',programs,c.Program,sRO)+fcol(fld('Merchant','r-mer',c.MerchantName,sRO),fld('Sales Name','r-sal',c.SalesName,sRO))+fcol(fld('Users Name','r-usr',c.UserName,true,'auto'),fld('Entry Date','r-dt',c.EntryDate?new Date(c.EntryDate).toLocaleDateString('en-EG'):'',true,'auto'));
+  html+=`<div class="sec">Risk Assessment ${canReview?'(Fill Below)':isSales?'(Read Only)':''}</div>`;
+  if(canReview){
+    html+=fcol(fld('I-Score','r-isc','',false),fld('Fico Score','r-fico','',false))+fcol(fld('Limit','r-lim','',false),fld('Tenor','r-ten','',false))+fsel('Deviation','r-dev',deviations,'',false)+fcol(fld('Recent DPR','r-dpr','',false),fld('BUY&GO','r-buygo','',false))+fld('Total DBR','r-dbr','',false)+fcol(fld('Reviewer Name','r-rev',currentUser,false),fld('Reviewer User','r-revu',currentUser,false))+fld('S.Merchant','r-smer','',false)+fld('Comment','r-com','',false);
+    html+=`<div id="rej-fields" style="display:none;">${fsel('Reason','r-rea',reasons,'',false)}${fsel('Sub-Reason','r-sub',subReasons,'',false)}</div>`;
+    html+=`<div class="action-row"><button class="btn-approve" onclick="doApprove(${c.Id})">Approve ✓</button><button class="btn-reject" onclick="showRejFields()">Reject ✗</button></div><div id="rej-confirm" style="display:none;"><button class="btn btn-reject" style="margin-top:6px;" onclick="doReject(${c.Id})">Confirm Rejection</button></div>`;
+  } else {
+    html+=fcol(fld('I-Score','r-isc',c.IScore,true),fld('Fico Score','r-fico',c.FicoScore,true))+fcol(fld('Limit','r-lim',c.Limit,true),fld('Tenor','r-ten',c.Tenor,true))+fld('Deviation','r-dev',c.Deviation,true)+fcol(fld('Recent DPR','r-dpr',c.RecentDPR,true),fld('BUY&GO','r-buygo',c.BuyGoInstallment,true))+fld('Total DBR','r-dbr',c.TotalDBR,true)+fcol(fld('Reviewer','r-rev',c.ReviewerName,true),fld('Reviewer User','r-revu',c.ReviewerUser,true))+fld('S.Merchant','r-smer',c.SMerchantName,true)+fld('Comment','r-com',c.RiskComment,true);
+    if(c.Status==='Rejected') html+=fcol(fld('Reason','r-rea',c.Reason,true),fld('Sub-Reason','r-sub',c.SubReason,true));
+    if(c.Status==='Approved') html+=fld('Date of Signing','r-sign',c.SigningDate?new Date(c.SigningDate).toLocaleDateString('en-EG'):'',true,'auto');
+  }
+  if(canEdit) html+=`<button class="btn btn-green" onclick="doResubmit(${c.Id})" style="margin-top:12px;">Resubmit Client</button>`;
+  html+=`<div style="height:20px;"></div>`;
+  document.getElementById('review-body').innerHTML=html;
+  showScreen('sc-review');
+}
+
+function showRejFields(){document.getElementById('rej-fields').style.display='block';document.getElementById('rej-confirm').style.display='block';}
+
+async function doApprove(id){
+  showToast('Saving...');
+  await sp({action:'patch',list:LISTS.clients,id,item:{Status:'Approved',IScore:gv('r-isc'),FicoScore:parseFloat(gv('r-fico'))||null,Limit:parseFloat(gv('r-lim'))||null,Tenor:parseFloat(gv('r-ten'))||null,Deviation:gv('r-dev'),RecentDPR:parseFloat(gv('r-dpr'))||null,BuyGoInstallment:parseFloat(gv('r-buygo'))||null,TotalDBR:parseFloat(gv('r-dbr'))||null,ReviewerName:gv('r-rev'),ReviewerUser:gv('r-revu'),SMerchantName:gv('r-smer'),RiskComment:gv('r-com'),SigningDate:new Date().toISOString()}});
+  showToast('Approved ✓'); await loadClients(); goBack();
+}
+
+async function doReject(id){
+  showToast('Saving...');
+  await sp({action:'patch',list:LISTS.clients,id,item:{Status:'Rejected',IScore:gv('r-isc'),FicoScore:parseFloat(gv('r-fico'))||null,TotalDBR:parseFloat(gv('r-dbr'))||null,Reason:gv('r-rea'),SubReason:gv('r-sub'),RiskComment:gv('r-com'),ReviewerName:gv('r-rev'),ReviewerUser:gv('r-revu')}});
+  showToast('Rejected'); await loadClients(); goBack();
+}
+
+async function doResubmit(id){
+  showToast('Resubmitting...');
+  await sp({action:'patch',list:LISTS.clients,id,item:{CustomerName:gv('r-name'),Mobile:gv('r-mob'),NationalID:gv('r-id'),CompanyName:gv('r-co'),MonthlyIncome:parseFloat(gv('r-inc'))||null,Program:gv('r-prog'),MerchantName:gv('r-mer'),SalesName:gv('r-sal'),Status:'Pending',Reason:'',SubReason:'',IScore:'',FicoScore:null,Limit:null,Tenor:null,Deviation:'',RecentDPR:null,BuyGoInstallment:null,TotalDBR:null,ReviewerName:'',ReviewerUser:'',SMerchantName:'',RiskComment:''}});
+  showToast('Resubmitted'); await loadClients(); goBack();
+}
+
+async function submitClient(){
+  const name=gv('a-name'); if(!name){showToast('Please enter customer name');return;}
+  const btn=document.getElementById('submit-btn'); btn.textContent='Submitting...'; btn.disabled=true;
+  await sp({action:'post',list:LISTS.clients,item:{CustomerName:name,Mobile:gv('a-mob'),NationalID:gv('a-id'),CompanyName:gv('a-co'),MonthlyIncome:parseFloat(gv('a-inc'))||null,Program:gv('a-prog'),MerchantName:gv('a-mer'),SalesName:gv('a-sal'),UserName:currentUser,Team:currentTeam,Status:'Pending',EntryDate:new Date().toISOString()}});
+  ['a-name','a-mob','a-id','a-co','a-inc','a-mer','a-sal'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('a-prog').value='';
+  showToast('Client submitted ✓'); await loadClients(); document.querySelectorAll('.nb')[0].click();
+  btn.textContent='Submit Client'; btn.disabled=false;
+}
+
+function goBack(){showScreen('sc-list');document.querySelectorAll('.nb').forEach((b,i)=>b.classList.toggle('on',i===0));}
+
+function renderDash(){
+  const ap=allClients.filter(c=>c.Status==='Approved').length, rj=allClients.filter(c=>c.Status==='Rejected').length, pn=allClients.filter(c=>c.Status==='Pending').length, tot=allClients.length, rate=tot?Math.round((ap/tot)*100):0;
+  let html='';
+  if(currentRole==='risk'){
+    ['A','B'].forEach(team=>{
+      const tc=allClients.filter(c=>c.Team===team), ta=tc.filter(c=>c.Status==='Approved').length, tr=tc.filter(c=>c.Status==='Rejected').length, tp=tc.filter(c=>c.Status==='Pending').length, trate=tc.length?Math.round((ta/tc.length)*100):0;
+      html+=`<div class="team-block"><div class="team-label">Team ${team}</div><div class="metric-grid"><div class="metric"><div class="ml">Total</div><div class="mv">${tc.length}</div></div><div class="metric"><div class="ml">Approved</div><div class="mv">${ta}</div></div><div class="metric"><div class="ml">Rejected</div><div class="mv r">${tr}</div></div><div class="metric"><div class="ml">Pending</div><div class="mv a">${tp}</div></div></div><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Approval rate — ${trate}%</div><div class="pbar"><div class="pfill" style="width:${trate}%;"></div></div></div>`;
+    });
+  } else {
+    const lbl=currentRole.startsWith('leader')?'Team Stats':'My Stats';
+    html=`<div class="team-block"><div class="team-label">${lbl}</div><div class="metric-grid"><div class="metric"><div class="ml">Total</div><div class="mv">${tot}</div></div><div class="metric"><div class="ml">Approved</div><div class="mv">${ap}</div></div><div class="metric"><div class="ml">Rejected</div><div class="mv r">${rj}</div></div><div class="metric"><div class="ml">Pending</div><div class="mv a">${pn}</div></div></div><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Approval rate — ${rate}%</div><div class="pbar"><div class="pfill" style="width:${rate}%;"></div></div></div>`;
+  }
+  document.getElementById('dash-body').innerHTML=`<div style="padding:16px 18px;">${html}</div>`;
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
